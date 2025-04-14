@@ -146,6 +146,15 @@ with app.app_context():
 
     db.session.commit()
 
+# Health check and root endpoints
+@app.route('/')
+def root():
+    return jsonify({'message': 'Insurance Advisor API'})
+
+@app.route('/health')
+def health_check():
+    return jsonify({'status': 'healthy'})
+
 # API Routes
 @app.route('/api/policies', methods=['GET'])
 def get_policies():
