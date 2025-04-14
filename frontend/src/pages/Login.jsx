@@ -19,6 +19,7 @@ import {
   Lock as LockIcon,
 } from '@mui/icons-material';
 import axios from 'axios';
+import { API_URL } from '../config';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -44,7 +45,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post('/api/auth/login', formData);
+      const response = await axios.post(`${API_URL}/auth/login`, formData);
       const { token, user } = response.data;
       
       // Update auth context
