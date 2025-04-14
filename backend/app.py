@@ -10,18 +10,23 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-app = Flask(__name__)
+def create_app():
+    app = Flask(__name__)
 
-# Configure CORS and basic settings
-app.config['PROPAGATE_EXCEPTIONS'] = True
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
+    # Configure CORS and basic settings
+    app.config['PROPAGATE_EXCEPTIONS'] = True
+    app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 
-CORS(app, 
-     resources={r"/*": {"origins": "*"}},
-     allow_headers=["Content-Type", "Authorization"],
-     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-     supports_credentials=True
-)
+    CORS(app, 
+         resources={r"/*": {"origins": "*"}},
+         allow_headers=["Content-Type", "Authorization"],
+         methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+         supports_credentials=True
+    )
+
+    return app
+
+app = create_app()
 
 # Configuratie
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///insurance.db'
@@ -256,8 +261,7 @@ def contact():
         print('Error:', str(e))  # Voor debugging
         return jsonify({'error': 'Er is een fout opgetreden'}), 500
 
-def create_app():
-    return app
+
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5002))
