@@ -10,23 +10,18 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-def create_app():
-    app = Flask(__name__)
+app = Flask(__name__)
 
-    # Configure CORS and basic settings
-    app.config['PROPAGATE_EXCEPTIONS'] = True
-    app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
+# Configure CORS and basic settings
+app.config['PROPAGATE_EXCEPTIONS'] = True
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 
-    CORS(app, 
-         resources={r"/*": {"origins": "*"}},
-         allow_headers=["Content-Type", "Authorization"],
-         methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-         supports_credentials=True
-    )
-
-    return app
-
-app = create_app()
+CORS(app, 
+     resources={r"/*": {"origins": "*"}},
+     allow_headers=["Content-Type", "Authorization"],
+     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+     supports_credentials=True
+)
 
 # Configuratie
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///insurance.db'
