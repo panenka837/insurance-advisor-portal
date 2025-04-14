@@ -29,10 +29,11 @@ CORS(app, resources={
 # Configuratie
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///insurance.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['MAIL_SERVER'] = os.getenv('SMTP_HOST')
-app.config['MAIL_PORT'] = int(os.getenv('SMTP_PORT'))
-app.config['MAIL_USERNAME'] = os.getenv('SMTP_USER')
-app.config['MAIL_PASSWORD'] = os.getenv('SMTP_PASS')
+# Email configuration (optional)
+app.config['MAIL_SERVER'] = os.getenv('SMTP_HOST', 'localhost')
+app.config['MAIL_PORT'] = int(os.getenv('SMTP_PORT', '587'))
+app.config['MAIL_USERNAME'] = os.getenv('SMTP_USER', '')
+app.config['MAIL_PASSWORD'] = os.getenv('SMTP_PASS', '')
 app.config['MAIL_USE_TLS'] = True
 app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'your-secret-key-here')
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=1)  # Longer token expiry for demo
