@@ -9,6 +9,7 @@ import {
   Button,
   Typography,
   Alert,
+  InputAdornment,
 } from '@mui/material';
 import { Email as EmailIcon, Lock as LockIcon } from '@mui/icons-material';
 

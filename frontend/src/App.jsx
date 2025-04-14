@@ -22,23 +22,20 @@ import { AuthProvider } from './contexts/AuthContext';
 import { API_URL } from './config';
 import axios from 'axios';
 
+// Configure axios
+axios.defaults.baseURL = API_URL;
+
 // Theme configuration
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#FF0066', // Risk Pro Actief Pink
-      light: '#ff4d94',
-      dark: '#cc0052',
+      main: '#FF0066',
     },
     secondary: {
-      main: '#CCCC00',
-      light: '#ffff33',
-      dark: '#999900',
+      main: '#19857b',
     },
     error: {
-      main: '#f44336',
-      light: '#ff7961',
-      dark: '#ba000d',
+      main: '#FF1744',
     },
     warning: {
       main: '#ff9800',
@@ -70,20 +67,13 @@ const App = () => {
         <BrowserRouter>
           <Routes>
             <Route path="/login" element={<Login />} />
-            <Route
-              path="/"
-              element={
-                <PrivateRoute>
-                  <Layout />
-                </PrivateRoute>
-              }
-            >
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Navigate to="/dashboard" replace />} />
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="insurances" element={<Insurances />} />
               <Route path="claims" element={<Claims />} />
               <Route path="statistics" element={<Statistics />} />
               <Route path="contact" element={<Contact />} />
-              <Route index element={<Navigate to="/dashboard" replace />} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Route>
           </Routes>
