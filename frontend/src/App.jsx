@@ -73,14 +73,13 @@ const App = () => {
       <CssBaseline />
       <BrowserRouter>
         <Routes>
-          <Route element={<Layout />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/insurances" element={<Insurances />} />
-            <Route path="/claims" element={<Claims />} />
-            <Route path="/statistics" element={<Statistics />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Navigate to="/dashboard" replace />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="insurances" element={<Insurances />} />
+            <Route path="claims" element={<Claims />} />
+            <Route path="statistics" element={<Statistics />} />
+            <Route path="contact" element={<Contact />} />
           </Route>
         </Routes>
       </BrowserRouter>
