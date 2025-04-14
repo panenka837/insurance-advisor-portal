@@ -148,12 +148,15 @@ with app.app_context():
 
 # Health check and root endpoints
 @app.route('/')
-def root():
-    return jsonify({'message': 'Insurance Advisor API'})
-
 @app.route('/health')
 def health_check():
-    return jsonify({'status': 'healthy'})
+    response = jsonify({
+        'status': 'healthy',
+        'message': 'Insurance Advisor API is running',
+        'timestamp': datetime.utcnow().isoformat()
+    })
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 # API Routes
 @app.route('/api/policies', methods=['GET'])
@@ -251,4 +254,5 @@ def contact():
         return jsonify({'error': 'Er is een fout opgetreden'}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5002)
+    port = int(os.environ.get('PORT', 5002))
+    app.run(host='0.0.0.0', port=port, debug=os.environ.get('FLASK_ENV') == 'development')
