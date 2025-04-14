@@ -5,8 +5,6 @@ import { CssBaseline } from '@mui/material';
 
 // Components
 import Layout from './components/Layout';
-import PrivateRoute from './components/PrivateRoute';
-import RoleBasedRoute from './components/RoleBasedRoute';
 
 // Pages
 import Dashboard from './pages/Dashboard';
@@ -14,10 +12,6 @@ import Insurances from './pages/Insurances';
 import Claims from './pages/Claims';
 import Statistics from './pages/Statistics';
 import Contact from './pages/Contact';
-import Login from './pages/Login';
-
-// Auth Context
-import { AuthProvider } from './contexts/AuthContext';
 
 // Config
 import { API_URL } from './config';
@@ -77,32 +71,19 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <AuthProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route
-              element={
-                <PrivateRoute>
-                  <Layout />
-                </PrivateRoute>
-              }
-            >
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/insurances" element={<Insurances />} />
-              <Route path="/claims" element={<Claims />} />
-              <Route path="/statistics" element={
-                <RoleBasedRoute allowedRoles={['admin']}>
-                  <Statistics />
-                </RoleBasedRoute>
-              } />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
-              <Route path="*" element={<Navigate to="/dashboard" replace />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
-      </AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/insurances" element={<Insurances />} />
+            <Route path="/claims" element={<Claims />} />
+            <Route path="/statistics" element={<Statistics />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
     </ThemeProvider>
   );
 };

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import {
   AppBar,
@@ -23,38 +22,24 @@ import {
   Assignment as ClaimIcon,
   BarChart as StatsIcon,
   ContactSupport as ContactIcon,
-  Logout as LogoutIcon,
 } from '@mui/icons-material';
 
 const drawerWidth = 240;
 
-const getMenuItems = (userRole) => [
+const menuItems = [
   { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
   { text: 'Verzekeringen', icon: <PolicyIcon />, path: '/insurances' },
   { text: 'Claims', icon: <ClaimIcon />, path: '/claims' },
-  ...(userRole === 'admin' ? [{ text: 'Statistieken', icon: <StatsIcon />, path: '/statistics' }] : []),
+  { text: 'Statistieken', icon: <StatsIcon />, path: '/statistics' },
   { text: 'Contact', icon: <ContactIcon />, path: '/contact' },
-  { text: 'Uitloggen', icon: <LogoutIcon />, onClick: () => {} }, // onClick will be set in the component
 ];
 
 const Layout = () => {
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
-
   const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const { logout, user } = useAuth();
-
-  // Get menu items based on user role
-  const menuItems = getMenuItems(user?.role);
-  
-  // Update the logout menu item
-  menuItems[menuItems.length - 1].onClick = handleLogout;
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
