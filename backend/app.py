@@ -13,14 +13,9 @@ load_dotenv()
 app = Flask(__name__)
 
 # Configure CORS
-allowed_origins = [
-    'http://localhost:5173',  # Local development
-    'https://insurance-advisor-portal.windsurf.build',  # Production
-]
-
 CORS(app, resources={
-    r"/api/*": {
-        "origins": allowed_origins,
+    r"/*": {
+        "origins": "*",
         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         "allow_headers": ["Content-Type", "Authorization"]
     }
