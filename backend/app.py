@@ -53,6 +53,12 @@ class User(db.Model):
     def __repr__(self):
         return f'<User {self.email}>'
 
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
+
 class Policy(db.Model):
     __tablename__ = 'policies'
     id = db.Column(db.Integer, primary_key=True)
@@ -89,7 +95,7 @@ def login():
     
     user = User.query.filter_by(email=data['email']).first()
     
-    if not user or not check_password_hash(user.password, data['password']):
+    if not user or not user.check_password(data['password']):
         return jsonify({'message': 'Ongeldige inloggegevens'}), 401
     
     access_token = create_access_token(identity={
@@ -107,6 +113,14 @@ def login():
             'name': user.name,
             'role': user.role
         }
+    })
+
+@app.route('/api/auth/verify', methods=['GET'])
+@jwt_required()
+def verify_token():
+    current_user = get_jwt_identity()
+    return jsonify({
+        'user': current_user
     })
 
 @app.route('/api/auth/me', methods=['GET'])

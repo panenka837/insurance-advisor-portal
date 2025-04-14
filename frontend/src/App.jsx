@@ -5,13 +5,18 @@ import { CssBaseline } from '@mui/material';
 
 // Components
 import Layout from './components/Layout';
+import PrivateRoute from './components/PrivateRoute';
 
 // Pages
+import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Insurances from './pages/Insurances';
 import Claims from './pages/Claims';
 import Statistics from './pages/Statistics';
 import Contact from './pages/Contact';
+
+// Auth Context
+import { AuthProvider } from './contexts/AuthContext';
 
 // Config
 import { API_URL } from './config';
@@ -47,20 +52,10 @@ const theme = createTheme({
     },
     text: {
       primary: '#333333',
-      secondary: '#666666',
     },
   },
   typography: {
     fontFamily: 'Roboto, Arial, sans-serif',
-  },
-  components: {
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-        },
-      },
-    },
   },
 });
 
@@ -71,18 +66,29 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Navigate to="/dashboard" replace />} />
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="insurances" element={<Insurances />} />
-            <Route path="claims" element={<Claims />} />
-            <Route path="statistics" element={<Statistics />} />
-            <Route path="contact" element={<Contact />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route
+              path="/"
+              element={
+                <PrivateRoute>
+                  <Layout />
+                </PrivateRoute>
+              }
+            >
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="insurances" element={<Insurances />} />
+              <Route path="claims" element={<Claims />} />
+              <Route path="statistics" element={<Statistics />} />
+              <Route path="contact" element={<Contact />} />
+              <Route index element={<Navigate to="/dashboard" replace />} />
+              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
     </ThemeProvider>
   );
 };

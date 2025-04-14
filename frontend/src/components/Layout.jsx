@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation, Outlet } from 'react-router-dom';
+import { useNavigate, useLocation, Outlet, Link } from 'react-router-dom';
 import {
   AppBar,
   Box,
+  CssBaseline,
   Drawer,
   IconButton,
   List,
@@ -12,8 +13,7 @@ import {
   ListItemText,
   Toolbar,
   Typography,
-  useTheme,
-  useMediaQuery,
+  Button,
 } from '@mui/material';
 import {
   Menu as MenuIcon,
@@ -22,7 +22,9 @@ import {
   Assignment as ClaimIcon,
   BarChart as StatsIcon,
   ContactSupport as ContactIcon,
+  Logout as LogoutIcon,
 } from '@mui/icons-material';
+import { useAuth } from '../contexts/AuthContext';
 
 const drawerWidth = 240;
 
@@ -35,7 +37,8 @@ const menuItems = [
 ];
 
 const Layout = () => {
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const { logout, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
@@ -45,12 +48,17 @@ const Layout = () => {
     setMobileOpen(!mobileOpen);
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
   const drawer = (
     <div>
       <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              Risk Pro Actief
-            </Typography>
+          Risk Pro Actief
+        </Typography>
       </Box>
       <List>
         {menuItems.map((item) => (
@@ -103,28 +111,39 @@ const Layout = () => {
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+      <CssBaseline />
       <AppBar
         position="fixed"
         sx={{
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           ml: { sm: `${drawerWidth}px` },
-          backgroundColor: 'white',
-          color: 'text.primary',
-          boxShadow: 1,
         }}
       >
         <Toolbar>
           <IconButton
             color="inherit"
+            aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
             sx={{ mr: 2, display: { sm: 'none' } }}
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Risk Pro Actief Portal
+          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
+            Risk Pro Actief
           </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Typography variant="body2" sx={{ mr: 2 }}>
+              {user?.email}
+            </Typography>
+            <Button
+              color="inherit"
+              onClick={handleLogout}
+              startIcon={<LogoutIcon />}
+            >
+              Uitloggen
+            </Button>
+          </Box>
         </Toolbar>
       </AppBar>
 
