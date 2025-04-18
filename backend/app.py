@@ -19,10 +19,6 @@ load_dotenv()
 
 app = Flask(__name__)
 
-# Configure CORS
-CORS(
-    app,
-    resources={
         r"/api/*": {
             "origins": [
                 "https://insurance-advisor-portal.vercel.app",
