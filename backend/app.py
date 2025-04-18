@@ -53,27 +53,90 @@ CORS(
 # Models
 class Appointment(db.Model):
     __tablename__ = 'appointments'
-    # ... (rest van het model)
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    datum = db.Column(db.DateTime, nullable=False)
+    onderwerp = db.Column(db.String(100), nullable=False)
+    status = db.Column(db.String(20), nullable=False, default='open')
+    notities = db.Column(db.Text)
 
 class ContactMessage(db.Model):
     __tablename__ = 'contact_messages'
-    # ... (rest van het model)
+    id = db.Column(db.Integer, primary_key=True)
+    naam = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(120), nullable=False)
+    telefoon = db.Column(db.String(30))
+    onderwerp = db.Column(db.String(200))
+    bericht = db.Column(db.Text, nullable=False)
+    voorkeur_contact = db.Column(db.String(30))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'naam': self.naam,
+            'email': self.email,
+            'telefoon': self.telefoon,
+            'onderwerp': self.onderwerp,
+            'bericht': self.bericht,
+            'voorkeur_contact': self.voorkeur_contact,
+            'created_at': self.created_at
+        }
 
 class User(db.Model):
     __tablename__ = 'users'
-    # ... (rest van het model)
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(255), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    role = db.Column(db.String(20), nullable=False, default='client')
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    def __repr__(self):
+        return f'<User {self.email}>'
+    def set_password(self, password):
+        self.password = generate_password_hash(password, method='sha256')
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
 
 class Policy(db.Model):
     __tablename__ = 'policies'
-    # ... (rest van het model)
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    type = db.Column(db.String(50), nullable=False)
+    dekking = db.Column(db.String(100), nullable=False)
+    premie = db.Column(db.Float, nullable=False)
+    eigen_risico = db.Column(db.Float, nullable=False)
+    vervaldatum = db.Column(db.DateTime, nullable=False)
+    status = db.Column(db.String(20), nullable=False, default='actief')
+    beschrijving = db.Column(db.Text)
+    claims = db.relationship('Claim', backref='policy', lazy=True)
+    payments = db.relationship('Payment', backref='policy', lazy=True)
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'type': self.type,
+            'dekking': self.dekking,
+            'premie': self.premie,
+            'eigen_risico': self.eigen_risico,
+            'vervaldatum': self.vervaldatum,
+            'status': self.status,
+            'beschrijving': self.beschrijving
+        }
 
 class Claim(db.Model):
     __tablename__ = 'claims'
-    # ... (rest van het model)
+    id = db.Column(db.Integer, primary_key=True)
+    policy_id = db.Column(db.Integer, db.ForeignKey('policies.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    status = db.Column(db.String(20), nullable=False, default='pending')
+    document_url = db.Column(db.String(200))
 
 class Payment(db.Model):
     __tablename__ = 'payments'
-    # ... (rest van het model)
+    id = db.Column(db.Integer, primary_key=True)
+    policy_id = db.Column(db.Integer, db.ForeignKey('policies.id'), nullable=False)
+    status = db.Column(db.String(20), nullable=False, default='pending')
+    bedrag = db.Column(db.Float, nullable=False)
+    betaaldatum = db.Column(db.DateTime)
 
 # Automatisch tabellen aanmaken bij startup (voor Render gratis versie)
 with app.app_context():
