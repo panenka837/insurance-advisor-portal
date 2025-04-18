@@ -19,32 +19,11 @@ load_dotenv()
 
 app = Flask(__name__)
 
-CORS(
-    app,
-    resources={
-        r"/api/*": {
-            "origins": [
-                "https://insurance-advisor-portal.vercel.app",
-                "http://localhost:5175"
-            ],
-            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-            "allow_headers": ["Content-Type", "Authorization"],
-        }
-    }
-)
-
-# Automatisch tabellen aanmaken bij startup (voor Render gratis versie)
-with app.app_context():
-    db.create_all()
-
 # Configure CORS and basic settings
 app.config['PROPAGATE_EXCEPTIONS'] = True
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
-
-# Configuratie
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///insurance.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# Email configuration (optional)
 app.config['MAIL_SERVER'] = os.getenv('SMTP_HOST', 'localhost')
 app.config['MAIL_PORT'] = int(os.getenv('SMTP_PORT', '587'))
 app.config['MAIL_USERNAME'] = os.getenv('SMTP_USER', '')
@@ -56,6 +35,24 @@ app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1)
 db = SQLAlchemy(app)
 mail = Mail(app)
 jwt = JWTManager(app)
+
+CORS(
+    app,
+    resources={
+        r"/api/*": {
+            "origins": [
+                "https://insurance-advisor-portal.vercel.app",
+                "http://localhost:5175"
+            ],
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            "allow_headers": ["Content-Type", "Authorization"]
+        }
+    }
+)
+
+# Automatisch tabellen aanmaken bij startup (voor Render gratis versie)
+with app.app_context():
+    db.create_all()
 
 # Models
 class Appointment(db.Model):
