@@ -34,10 +34,8 @@ CORS(
     }
 )
 
-# Automatisch tabellen aanmaken bij eerste request (voor Render gratis versie)
-@app.before_first_request
-def create_tables():
-    from app import db
+# Automatisch tabellen aanmaken bij startup (voor Render gratis versie)
+with app.app_context():
     db.create_all()
 
 # Configure CORS and basic settings
