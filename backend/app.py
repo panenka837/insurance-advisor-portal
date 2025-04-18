@@ -142,47 +142,7 @@ class Payment(db.Model):
 with app.app_context():
     db.create_all()
 
-class Appointment(db.Model):
-    __tablename__ = 'appointments'
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    title = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.Text)
-    start = db.Column(db.DateTime, nullable=False)
-    end = db.Column(db.DateTime, nullable=False)
-    user = db.relationship('User')
 
-class ContactMessage(db.Model):
-    __tablename__ = 'contact_messages'
-    id = db.Column(db.Integer, primary_key=True)
-    naam = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(120), nullable=False)
-    telefoon = db.Column(db.String(30))
-    onderwerp = db.Column(db.String(200))
-    bericht = db.Column(db.Text, nullable=False)
-    voorkeur_contact = db.Column(db.String(30))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'naam': self.naam,
-            'email': self.email,
-            'telefoon': self.telefoon,
-            'onderwerp': self.onderwerp,
-            'bericht': self.bericht,
-            'voorkeur_contact': self.voorkeur_contact,
-            'created_at': self.created_at.isoformat()
-        }
-
-class User(db.Model):
-    __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(255), nullable=False)
-    name = db.Column(db.String(100), nullable=False)
-    role = db.Column(db.String(20), nullable=False, default='client')
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     def __repr__(self):
         return f'<User {self.email}>'
