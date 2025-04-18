@@ -1,4 +1,5 @@
 import React from 'react';
+import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Grid, Paper, Typography, Box, Card, CardContent } from '@mui/material';
 import { Shield, QuestionMark, Person, Security, Computer } from '@mui/icons-material';
@@ -78,7 +79,13 @@ const StatCard = ({ icon, value, label }) => (
 );
 
 const Dashboard = () => {
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
+
+  if (loading) {
+    return <Typography>Bezig met laden...</Typography>;
+  }
+  // Altijd volledig dashboard tonen, ongeacht loginstatus
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h4" gutterBottom>
@@ -87,8 +94,7 @@ const Dashboard = () => {
       <Typography variant="subtitle1" color="text.secondary" gutterBottom>
         Beheer uw polissen en betalingen op één plek
       </Typography>
-
-      <Grid container spacing={4} sx={{ mb: 4, mt: 2 }}>
+       <Grid container spacing={4} sx={{ mb: 4, mt: 2 }}>
         <Grid item xs={12} sm={6}>
           <FeatureCard
             icon={<Shield sx={{ fontSize: 40 }} />}
@@ -106,37 +112,40 @@ const Dashboard = () => {
           />
         </Grid>
       </Grid>
-
-      <Typography variant="h5" sx={{ mb: 3, mt: 4 }}>
-        Risk Pro Actief
-      </Typography>
-      <Typography variant="subtitle1" gutterBottom>
-        Administrator Dashboard
-      </Typography>
-
-      <Grid container spacing={3}>
-        <Grid item xs={12} sm={6} md={4}>
-          <StatCard
-            icon={<Person />}
-            value="124"
-            label="Totaal klanten"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <StatCard
-            icon={<Security />}
-            value="89"
-            label="Actieve polissen"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <StatCard
-            icon={<Computer />}
-            value="Online"
-            label="Systeem status"
-          />
-        </Grid>
-      </Grid>
+      {/* Admin-sectie alleen voor admins */}
+      {user && user.role === 'admin' && (
+        <>
+          <Typography variant="h5" sx={{ mb: 3, mt: 4 }}>
+            Risk Pro Actief
+          </Typography>
+          <Typography variant="subtitle1" gutterBottom>
+            Administrator Dashboard
+          </Typography>
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={6} md={4}>
+              <StatCard
+                icon={<Person />}
+                value="124"
+                label="Totaal klanten"
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <StatCard
+                icon={<Security />}
+                value="89"
+                label="Actieve polissen"
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <StatCard
+                icon={<Computer />}
+                value="Online"
+                label="Systeem status"
+              />
+            </Grid>
+          </Grid>
+        </>
+      )}
     </Box>
   );
 };

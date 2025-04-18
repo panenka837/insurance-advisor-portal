@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Paper,
@@ -11,8 +11,28 @@ import {
   MenuItem,
 } from '@mui/material';
 import axios from 'axios';
+import { useAuth } from '../contexts/AuthContext';
 
 const Contact = () => {
+  const { user, loading } = useAuth();
+  const [messages, setMessages] = useState([]);
+  const [loadingMessages, setLoadingMessages] = useState(false);
+  const [errorMessages, setErrorMessages] = useState(null);
+
+  useEffect(() => {
+    if (user && user.role === 'admin') {
+      setLoadingMessages(true);
+      axios.get('/api/contact')
+        .then(res => {
+          setMessages(res.data);
+          setErrorMessages(null);
+        })
+        .catch(err => {
+          setErrorMessages('Fout bij ophalen berichten');
+        })
+        .finally(() => setLoadingMessages(false));
+    }
+  }, [user]);
   const [formData, setFormData] = useState({
     naam: '',
     email: '',
@@ -67,6 +87,37 @@ const Contact = () => {
 
   return (
     <Box sx={{ p: 3, maxWidth: 800, mx: 'auto' }}>
+      {/* Alleen zichtbaar voor admin */}
+      {user && user.role === 'admin' && (
+        <Paper sx={{ p: 4, mb: 4, background: '#f5f5fa' }}>
+          <Typography variant="h5" gutterBottom color="primary">
+            Ingezonden Contactberichten
+          </Typography>
+          {loadingMessages ? (
+            <Typography variant="body2">Laden...</Typography>
+          ) : errorMessages ? (
+            <Alert severity="error">{errorMessages}</Alert>
+          ) : messages.length === 0 ? (
+            <Typography variant="body2">Geen berichten gevonden.</Typography>
+          ) : (
+            <Box>
+              {messages.map(msg => (
+                <Paper key={msg.id} sx={{ mb: 2, p: 2, borderLeft: '4px solid #FF0066' }}>
+                  <Typography variant="subtitle2" color="textSecondary">
+                    {new Date(msg.created_at).toLocaleString()} — <b>{msg.naam}</b> ({msg.email})
+                  </Typography>
+                  <Typography variant="body2" sx={{ mt: 1 }}><b>Onderwerp:</b> {msg.onderwerp}</Typography>
+                  <Typography variant="body2" sx={{ mt: 1 }}><b>Voorkeur contact:</b> {msg.voorkeur_contact}</Typography>
+                  <Typography variant="body1" sx={{ mt: 1 }}>{msg.bericht}</Typography>
+                  {msg.telefoon && (
+                    <Typography variant="body2" sx={{ mt: 1 }}><b>Telefoon:</b> {msg.telefoon}</Typography>
+                  )}
+                </Paper>
+              ))}
+            </Box>
+          )}
+        </Paper>
+      )}
       <Paper sx={{ p: 4 }}>
         <Typography variant="h4" gutterBottom>
           Contact Formulier

@@ -1,43 +1,30 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation, Outlet, Link } from 'react-router-dom';
-import {
-  AppBar,
-  Box,
-  CssBaseline,
-  Drawer,
-  IconButton,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Toolbar,
-  Typography,
-  Button,
-} from '@mui/material';
-import {
-  Menu as MenuIcon,
-  Dashboard as DashboardIcon,
-  Description as PolicyIcon,
-  Assignment as ClaimIcon,
-  BarChart as StatsIcon,
-  ContactSupport as ContactIcon,
-  Logout as LogoutIcon,
-} from '@mui/icons-material';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { Box, AppBar, CssBaseline, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, ListItemButton, Toolbar, Typography, Button } from '@mui/material';
+import { Menu as MenuIcon, Dashboard as DashboardIcon, Description as InsuranceIcon, Assignment as ClaimIcon, BarChart as StatsIcon, ContactSupport as ContactIcon, Info as InfoIcon, Logout as LogoutIcon, AccountBalance as AccountBalanceIcon, EventNote as AgendaIcon } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 
 const drawerWidth = 240;
 
-const menuItems = [
-  { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
-  { text: 'Verzekeringen', icon: <PolicyIcon />, path: '/insurances' },
-  { text: 'Claims', icon: <ClaimIcon />, path: '/claims' },
-  { text: 'Statistieken', icon: <StatsIcon />, path: '/statistics' },
-  { text: 'Contact', icon: <ContactIcon />, path: '/contact' },
+const getMenuItems = (role) => [
+  { text: 'Dashboard', path: '/app/dashboard', icon: <DashboardIcon /> },
+  { text: 'Verzekeringen', path: '/app/insurances', icon: <InsuranceIcon /> },
+  { text: 'Claims', path: '/app/claims', icon: <ClaimIcon /> },
+  ...(role === 'admin'
+    ? [
+        { text: 'Statistieken', path: '/app/statistics', icon: <StatsIcon /> },
+        { text: 'Boekhouding', path: '/app/accounting', icon: <AccountBalanceIcon /> },
+      ]
+    : []),
+  { text: 'Agenda', path: '/app/agenda', icon: <AgendaIcon /> },
+  { text: 'Contact', path: '/app/contact', icon: <ContactIcon /> },
+  { text: 'Over Ons', path: '/app/about', icon: <InfoIcon /> },
 ];
 
 const Layout = () => {
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const { logout, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -53,64 +40,39 @@ const Layout = () => {
     navigate('/login');
   };
 
+  const handleNavigation = (path) => {
+    navigate(path);
+    if (isMobile) {
+      setMobileOpen(false);
+    }
+  };
+
   const drawer = (
-    <div>
-      <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <Toolbar>
+        <Typography variant="h6" component="div">
           Risk Pro Actief
         </Typography>
-      </Box>
+      </Toolbar>
       <List>
-        {menuItems.map((item) => (
-          <ListItem key={item.text} disablePadding>
-            <ListItemButton
-              onClick={() => {
-                if (item.onClick) {
-                  item.onClick();
-                } else {
-                  navigate(item.path);
-                }
-                if (isMobile) setMobileOpen(false);
-              }}
-              selected={location.pathname === item.path}
-              sx={{
-                '&.Mui-selected': {
-                  backgroundColor: 'primary.main',
-                  color: 'white',
-                  '& .MuiListItemIcon-root': {
-                    color: 'white',
-                  },
-                  '&:hover': {
-                    backgroundColor: 'primary.dark',
-                  },
-                },
-                '&:hover': {
-                  backgroundColor: 'primary.light',
-                  color: 'white',
-                  '& .MuiListItemIcon-root': {
-                    color: 'white',
-                  },
-                },
-              }}
-            >
-              <ListItemIcon
-                sx={{
-                  color: location.pathname === item.path ? 'white' : 'primary.main',
-                  minWidth: 40,
-                }}
-              >
-                {item.icon}
-              </ListItemIcon>
+        {getMenuItems(user?.role).map((item) => (
+          <ListItem
+            key={item.text}
+            disablePadding
+            selected={location.pathname === item.path}
+          >
+            <ListItemButton onClick={() => handleNavigation(item.path)}>
+              <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItemButton>
           </ListItem>
         ))}
       </List>
-    </div>
+    </Box>
   );
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+    <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <AppBar
         position="fixed"
@@ -151,29 +113,23 @@ const Layout = () => {
         component="nav"
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
       >
-        {/* Mobile drawer */}
         <Drawer
           variant="temporary"
           open={mobileOpen}
           onClose={handleDrawerToggle}
           ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
+            keepMounted: true,
           }}
           sx={{
             display: { xs: 'block', sm: 'none' },
             '& .MuiDrawer-paper': {
               boxSizing: 'border-box',
               width: drawerWidth,
-              backgroundColor: 'background.default',
-              borderRight: '1px solid',
-              borderColor: 'divider',
             },
           }}
         >
           {drawer}
         </Drawer>
-
-        {/* Desktop drawer */}
         <Drawer
           variant="permanent"
           sx={{
@@ -181,9 +137,6 @@ const Layout = () => {
             '& .MuiDrawer-paper': {
               boxSizing: 'border-box',
               width: drawerWidth,
-              backgroundColor: 'background.default',
-              borderRight: '1px solid',
-              borderColor: 'divider',
             },
           }}
           open
@@ -199,7 +152,6 @@ const Layout = () => {
           p: 3,
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           mt: 8,
-          backgroundColor: 'grey.50',
         }}
       >
         <Outlet />

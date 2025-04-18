@@ -10,6 +10,11 @@ import {
   Typography,
   Alert,
   InputAdornment,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  IconButton
 } from '@mui/material';
 import { Email as EmailIcon, Lock as LockIcon } from '@mui/icons-material';
 
@@ -23,11 +28,39 @@ const Login = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  // State voor wachtwoord vergeten dialog
+  const [forgotOpen, setForgotOpen] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotSent, setForgotSent] = useState(false);
+  const [forgotError, setForgotError] = useState('');
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const handleForgotOpen = () => {
+    setForgotOpen(true);
+    setForgotEmail('');
+    setForgotSent(false);
+    setForgotError('');
+  };
+
+  const handleForgotClose = () => {
+    setForgotOpen(false);
+  };
+
+  const handleForgotSend = (e) => {
+    e.preventDefault();
+    setForgotError('');
+    if (!forgotEmail || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(forgotEmail)) {
+      setForgotError('Vul een geldig e-mailadres in.');
+      return;
+    }
+    // Hier kan later een API-aanroep komen
+    setForgotSent(true);
   };
 
   const handleSubmit = async (e) => {
@@ -53,11 +86,12 @@ const Login = () => {
     <Box
       sx={{
         minHeight: '100vh',
+        minWidth: '100vw',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'grey.50',
-        p: 2,
+        backgroundColor: '#f8f9fb', // Lichtere achtergrond
+        p: { xs: 1, sm: 2 },
       }}
     >
       <Card sx={{ maxWidth: 400, width: '100%', boxShadow: 3 }}>
@@ -125,9 +159,61 @@ const Login = () => {
             >
               {loading ? 'Inloggen...' : 'Inloggen'}
             </Button>
+
+            <Button
+              variant="text"
+              color="primary"
+              fullWidth
+              sx={{ mt: 1, textTransform: 'none' }}
+              onClick={handleForgotOpen}
+            >
+              Wachtwoord vergeten?
+            </Button>
+
+            <Button
+              variant="outlined"
+              color="secondary"
+              fullWidth
+              sx={{ mt: 2, textTransform: 'none' }}
+              onClick={() => navigate('/dashboard')}
+            >
+              Ga naar Dashboard
+            </Button>
           </form>
         </CardContent>
       </Card>
+
+      {/* Wachtwoord vergeten dialog */}
+      <Dialog open={forgotOpen} onClose={handleForgotClose} maxWidth="xs" fullWidth>
+        <DialogTitle>Wachtwoord vergeten?</DialogTitle>
+        <DialogContent>
+          {forgotSent ? (
+            <Alert severity="success" sx={{ mb: 2 }}>
+              Indien het e-mailadres bekend is, ontvang je een resetlink.
+            </Alert>
+          ) : (
+            <form onSubmit={handleForgotSend}>
+              <TextField
+                autoFocus
+                fullWidth
+                label="E-mailadres"
+                type="email"
+                value={forgotEmail}
+                onChange={e => setForgotEmail(e.target.value)}
+                margin="normal"
+                required
+              />
+              {forgotError && (
+                <Alert severity="error" sx={{ mb: 2 }}>{forgotError}</Alert>
+              )}
+              <DialogActions sx={{ px: 0 }}>
+                <Button onClick={handleForgotClose}>Annuleren</Button>
+                <Button type="submit" variant="contained" color="primary">Verstuur resetlink</Button>
+              </DialogActions>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 };
