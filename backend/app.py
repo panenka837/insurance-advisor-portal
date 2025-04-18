@@ -20,12 +20,8 @@ app = Flask(__name__)
 CORS(app, resources={
     r"/api/*": {
         "origins": [
-            "http://localhost:5175",
-            "http://localhost:5000",
-            "https://72960650e4d2.ngrok.app",
-            "https://4dab859cba7a.ngrok.app",
-            "https://bf4ac5ce8190.ngrok.app",
-            "https://f4a6180f1b8b.ngrok.app"
+            "https://insurance-advisor-portal.vercel.app",
+            "http://localhost:5175"
         ],
         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         "allow_headers": ["Content-Type", "Authorization"],
