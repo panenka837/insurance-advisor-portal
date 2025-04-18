@@ -50,11 +50,35 @@ CORS(
     }
 )
 
+# Models
+class Appointment(db.Model):
+    __tablename__ = 'appointments'
+    # ... (rest van het model)
+
+class ContactMessage(db.Model):
+    __tablename__ = 'contact_messages'
+    # ... (rest van het model)
+
+class User(db.Model):
+    __tablename__ = 'users'
+    # ... (rest van het model)
+
+class Policy(db.Model):
+    __tablename__ = 'policies'
+    # ... (rest van het model)
+
+class Claim(db.Model):
+    __tablename__ = 'claims'
+    # ... (rest van het model)
+
+class Payment(db.Model):
+    __tablename__ = 'payments'
+    # ... (rest van het model)
+
 # Automatisch tabellen aanmaken bij startup (voor Render gratis versie)
 with app.app_context():
     db.create_all()
 
-# Models
 class Appointment(db.Model):
     __tablename__ = 'appointments'
     id = db.Column(db.Integer, primary_key=True)
