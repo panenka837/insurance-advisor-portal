@@ -34,15 +34,6 @@ CORS(
     }
 )
 
-        "origins": [
-            "https://insurance-advisor-portal.vercel.app",
-            "http://localhost:5175"
-        ],
-        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        "allow_headers": ["Content-Type", "Authorization"],
-    }
-})
-
 # Configure CORS and basic settings
 app.config['PROPAGATE_EXCEPTIONS'] = True
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
