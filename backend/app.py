@@ -34,6 +34,12 @@ CORS(
     }
 )
 
+# Automatisch tabellen aanmaken bij eerste request (voor Render gratis versie)
+@app.before_first_request
+def create_tables():
+    from app import db
+    db.create_all()
+
 # Configure CORS and basic settings
 app.config['PROPAGATE_EXCEPTIONS'] = True
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
