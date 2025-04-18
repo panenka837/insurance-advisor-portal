@@ -123,13 +123,6 @@ class Policy(db.Model):
         }
 
 
-class Payment(db.Model):
-    __tablename__ = 'payments'
-    id = db.Column(db.Integer, primary_key=True)
-    policy_id = db.Column(db.Integer, db.ForeignKey('policies.id'), nullable=False)
-    status = db.Column(db.String(20), nullable=False, default='pending')
-    bedrag = db.Column(db.Float, nullable=False)
-    betaaldatum = db.Column(db.DateTime)
 
 # Automatisch tabellen aanmaken bij startup (voor Render gratis versie)
 with app.app_context():
@@ -148,13 +141,6 @@ with app.app_context():
 
 
 
-class Payment(db.Model):
-    __tablename__ = 'payments'
-    id = db.Column(db.Integer, primary_key=True)
-    policy_id = db.Column(db.Integer, db.ForeignKey('policies.id'), nullable=False)
-    status = db.Column(db.String(20), nullable=False, default='pending')
-    bedrag = db.Column(db.Float, nullable=False)
-    betaaldatum = db.Column(db.DateTime)
 
 # Authentication endpoints
 @app.route('/api/auth/login', methods=['POST'])
