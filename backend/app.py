@@ -153,32 +153,7 @@ with app.app_context():
     def check_password(self, password):
         return check_password_hash(self.password, password)
 
-class Policy(db.Model):
-    __tablename__ = 'policies'
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    type = db.Column(db.String(50), nullable=False)
-    dekking = db.Column(db.String(100), nullable=False)
-    premie = db.Column(db.Float, nullable=False)
-    eigen_risico = db.Column(db.Float, nullable=False)
-    vervaldatum = db.Column(db.DateTime, nullable=False)
-    status = db.Column(db.String(20), nullable=False, default='actief')
-    beschrijving = db.Column(db.Text)
-    claims = db.relationship('Claim', backref='policy', lazy=True)
-    payments = db.relationship('Payment', backref='policy', lazy=True)
 
-    def to_dict(self):
-        try:
-            return {
-                'id': self.id,
-                'type': self.type,
-                'dekking': self.dekking,
-                'premie': float(self.premie),
-                'eigen_risico': float(self.eigen_risico),
-                'vervaldatum': self.vervaldatum.isoformat() if self.vervaldatum else None,
-                'status': self.status or 'onbekend',
-                'beschrijving': self.beschrijving or ''
-            }
         except Exception as e:
             print(f'Error in policy.to_dict: {str(e)}')
             raise
