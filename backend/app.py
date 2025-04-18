@@ -154,10 +154,6 @@ with app.app_context():
         return check_password_hash(self.password, password)
 
 
-        except Exception as e:
-            print(f'Error in policy.to_dict: {str(e)}')
-            raise
-
 class Claim(db.Model):
     __tablename__ = 'claims'
     id = db.Column(db.Integer, primary_key=True)
