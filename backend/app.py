@@ -97,6 +97,22 @@ class User(db.Model):
     def check_password(self, password):
         return check_password_hash(self.password, password)
 
+class Claim(db.Model):
+    __tablename__ = 'claims'
+    id = db.Column(db.Integer, primary_key=True)
+    policy_id = db.Column(db.Integer, db.ForeignKey('policies.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    status = db.Column(db.String(20), nullable=False, default='pending')
+    document_url = db.Column(db.String(200))
+
+class Payment(db.Model):
+    __tablename__ = 'payments'
+    id = db.Column(db.Integer, primary_key=True)
+    policy_id = db.Column(db.Integer, db.ForeignKey('policies.id'), nullable=False)
+    status = db.Column(db.String(20), nullable=False, default='pending')
+    bedrag = db.Column(db.Float, nullable=False)
+    betaaldatum = db.Column(db.DateTime)
+
 class Policy(db.Model):
     __tablename__ = 'policies'
     id = db.Column(db.Integer, primary_key=True)
