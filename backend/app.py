@@ -122,13 +122,6 @@ class Policy(db.Model):
             'beschrijving': self.beschrijving
         }
 
-class Claim(db.Model):
-    __tablename__ = 'claims'
-    id = db.Column(db.Integer, primary_key=True)
-    policy_id = db.Column(db.Integer, db.ForeignKey('policies.id'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    status = db.Column(db.String(20), nullable=False, default='pending')
-    document_url = db.Column(db.String(200))
 
 class Payment(db.Model):
     __tablename__ = 'payments'
@@ -154,13 +147,6 @@ with app.app_context():
         return check_password_hash(self.password, password)
 
 
-class Claim(db.Model):
-    __tablename__ = 'claims'
-    id = db.Column(db.Integer, primary_key=True)
-    policy_id = db.Column(db.Integer, db.ForeignKey('policies.id'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    status = db.Column(db.String(20), nullable=False, default='pending')
-    document_url = db.Column(db.String(200))
 
 class Payment(db.Model):
     __tablename__ = 'payments'
