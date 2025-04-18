@@ -6,6 +6,9 @@ from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
+import os
+from flask import Flask
+from flask_cors import CORS
 from dotenv import load_dotenv
 
 # DEBUG: Toon huidige werkdirectory en databasepad
@@ -17,8 +20,20 @@ load_dotenv()
 app = Flask(__name__)
 
 # Configure CORS
-CORS(app, resources={
-    r"/api/*": {
+CORS(
+    app,
+    resources={
+        r"/api/*": {
+            "origins": [
+                "https://insurance-advisor-portal.vercel.app",
+                "http://localhost:5175"
+            ],
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            "allow_headers": ["Content-Type", "Authorization"],
+        }
+    }
+)
+
         "origins": [
             "https://insurance-advisor-portal.vercel.app",
             "http://localhost:5175"
